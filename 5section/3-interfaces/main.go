@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 )
+//an interface in Go is a way to define a contract of behavior. It tells the world: "I don't care what you are, as long as you can do these specific things."
 
+While a struct defines what an object is (its data), an interface defines what an object does (its methods).
 // 1. THE INTERFACE DEFINITION
 // An interface is a "Contract." It does not store data (like fields).
 // Instead, it lists "Method Signatures." 
