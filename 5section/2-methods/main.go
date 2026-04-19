@@ -15,12 +15,17 @@ type Employee struct {
 	JoinedAt  time.Time
 }
 
-// FullName A value receiver
+// 1. POINTER RECEIVER METHODS
+// The (e *Employee) part is the "Receiver". 
+// It attaches this function to the Employee struct.
+// Because it uses a pointer (*), it can actually modify the original struct.
+
 func (e *Employee) FullName() string {
 	return e.FirstName + " " + e.LastName
 }
 
 func (e *Employee) Deactivate() {
+	// This changes the IsActive field on the original jane/joe.
 	e.IsActive = false
 }
 
@@ -28,6 +33,7 @@ func (e *Employee) SetJoinedAt(t time.Time) {
 	e.JoinedAt = t
 }
 
+// 2. CONSTRUCTOR (Review)
 func NewEmployee(id int, firstName, lastName, position string, isActive bool) Employee {
 	return Employee{
 		ID:        id,
@@ -39,12 +45,14 @@ func NewEmployee(id int, firstName, lastName, position string, isActive bool) Em
 	}
 }
 
+// 3. REGULAR FUNCTION (Comparison)
+// This does the same thing as the Deactivate() method, 
+// but you have to pass the employee as an argument: deactivate(&jane).
 func deactivate(e *Employee) {
 	e.IsActive = false
 }
 
 func main() {
-
 	jane := Employee{
 		ID:        1,
 		FirstName: "Jane",
@@ -52,19 +60,24 @@ func main() {
 		Position:  "Night",
 		Salary:    1000,
 		IsActive:  true,
-		//JoinedAt:  time.Now(),
 	}
 
 	fmt.Printf("%+v\n", jane)
-	jane.Deactivate()
-	//deactivate(&jane)
+	
+	// Calling the method! Much cleaner than deactivate(&jane).
+	jane.Deactivate() 
 	fmt.Printf("%+v\n", jane)
 
+	// Demonstrating time manipulation
 	jane.SetJoinedAt(time.Now().Add(100000000 * time.Minute))
 	fmt.Printf("%+v\n", jane)
 
-	joe := &Employee{}
-	joe = nil // demo to show panic
+	// 4. THE "NIL POINTER" TRAP
+	// This is a common beginner mistake.
+	joe := &Employee{} // Points to an empty employee
+	joe = nil          // Now joe points to NOTHING (nil)
 
-	joe.FullName() // Bad idea
+	// DANGER: Calling a method on a nil pointer will cause a "Panic" (crash)
+	// because Go tries to look up 'FirstName' at a memory address that doesn't exist.
+	// joe.FullName() // Uncommenting this would crash the program.
 }
